@@ -1,0 +1,39 @@
+version: "3.8"
+
+services: 
+    
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:1.123.9
+    restart: always
+    ports:
+      - "5679:5679"
+    environment:
+      GENERIC_TIMEZONE: America/Sao_Paulo
+      N8N_HOST: iara.impulsocore.com.br
+      N8N_PROTOCOL: https
+      N8N_PORT: 5679
+      N8N_PATH: /n8n_2/  # ADICIONE ESTA LINHA
+      N8N_SECURE_COOKIE: "true"
+      WEBHOOK_URL: https://iara.impulsocore.com.br/n8n_2/
+      N8N_ENCRYPTION_KEY: CHANGE-ME-32-CHARS-MIN
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+      DB_TYPE: sqlite
+      DB_SQLITE_VACUUM_ON_STARTUP: "true"
+      HTTP_PROXY:
+      HTTPS_PROXY:
+      NO_PROXY: localhost,127.0.0.1,.supabase.co
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      NODE_OPTIONS: --dns-result-order=ipv4first
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - impulso-net
+    expose:
+      - "5679"                
+
+volumes:
+  n8n_data:
+
+networks:
+  impulso-net:
+    external: true

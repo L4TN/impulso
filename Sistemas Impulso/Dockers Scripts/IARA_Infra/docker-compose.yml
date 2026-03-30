@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+
+  redisN:
+    image: redis:latest
+    container_name: redisN
+    command: >
+      redis-server --appendonly yes --requirepass 123456
+    ports:
+      - "6383:6379"
+    volumes:
+      - redisN_data:/var/lib/rabbitmq
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 256M
+    networks:
+      - impulso-net
+    expose:
+      - "6379"              
+
+  postgres-pgvector:
+    container_name: postgres_pgvector
+    image: pgvector/pgvector:pg16  
+    restart: always
+    environment:
+      POSTGRES_DB: iara_infra           
+      POSTGRES_USER: impulso_hub        
+      POSTGRES_PASSWORD: impulso_hub 
+    ports:
+      - "5436:5432"               
+    volumes:
+      - pgvector_data:/var/lib/postgresql/data
+    networks:
+      - impulso-net
+    expose:
+      - "5432"  
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports: ["5672:5672", "15672:15672"]
+    environment:
+      - RABBITMQ_DEFAULT_USER=impulso_hub
+      - RABBITMQ_DEFAULT_PASS=impulso_hub
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - impulso-net
+    expose:
+      - "5672"             
+
+volumes:
+  pgvector_data:
+  rabbitmq_data:
+  redisN_data:
+
+networks:
+  impulso-net:
+    external: true

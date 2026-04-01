@@ -5,6 +5,7 @@
 e ngix serve para n8n(com certificado)
 
 iara.n8n
+https://iara.impulsocore.com.br/n8n/
 
 CloudFlare WAF nginx
 
